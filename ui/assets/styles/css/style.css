@@ -451,7 +451,22 @@ a:active {
 .js-section {
   transition: 1s background;
   overflow: hidden;
-  transform: translate3d(100vw, 0, 0);
+  transform: translateX(100vw, 0, 0);
+  will-change: background;
+}
+.js-section .js-view-icon {
+  transition: .3s;
+}
+.js-section:not(.active) .js-view-icon {
+  background: transparent !important;
+}
+.js-spiral-line {
+  background-image: url(/ui/assets/images/pattern.png);
+  background-size: 200px;
+}
+.js-view-icon:hover {
+  opacity: .8;
+  cursor: pointer;
 }
 .js-scroll rect {
   -webkit-animation: blink 3s infinite;
@@ -486,22 +501,25 @@ a:active {
   border-radius: 100% 0 0 0;
 }
 .js-gallery .js-gallery-image:nth-of-type(2) {
-  transition-delay: .1s;
+  transition-delay: .2s;
 }
 .js-gallery .js-gallery-image:nth-of-type(2) img {
   border-radius: 0 100% 0 0;
 }
 .js-gallery .js-gallery-image:nth-of-type(3) {
-  transition-delay: .2s;
+  transition-delay: .4s;
 }
 .js-gallery .js-gallery-image:nth-of-type(3) img {
   border-radius: 0 0 100% 0;
 }
 .js-gallery .js-gallery-image:nth-of-type(4) {
-  transition-delay: .3s;
+  transition-delay: .6s;
 }
 .js-gallery .js-gallery-image:nth-of-type(4) img {
-  border-radius: 0 0 0 80%;
+  border-radius: 0 0 0 75%;
+}
+.is-gallery {
+  cursor: none;
 }
 .is-gallery .js-gallery .js-gallery-image {
   pointer-events: auto;
@@ -511,6 +529,9 @@ a:active {
 .is-gallery .js-gallery .js-gallery-image img {
   transform: translate3d(0, 0, 0);
   border-radius: 0;
+}
+.is-gallery .js-close-icon {
+  left: 0;
 }
 .svg-spiral {
   stroke-dasharray: 135 137;
@@ -8447,10 +8468,28 @@ button.bg-white-20:hover {
   color: #6ad4ff;
 }
 .bg-nfc {
-  background: #78517B;
+  background: #2C2435;
 }
 .color-nfc {
-  color: #2D2333;
+  color: #52BEAC;
+}
+.bg-baldwin {
+  background-color: #244C89;
+}
+.color-baldwin {
+  color: #FAAD69;
+}
+.bg-grid {
+  background: #271325;
+}
+.color-grid {
+  color: #FB6247;
+}
+.bg-spent {
+  background: #0E1219;
+}
+.color-spent {
+  color: #DBD1B7;
 }
 /* CSS Document */
 /**********       BASE        **********/
@@ -8461,6 +8500,7 @@ body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, "Roboto", "Droid Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
   -webkit-overflow-scrolling: touch;
+  will-change: background;
 }
 .touch {
   -webkit-touch-callout: none;

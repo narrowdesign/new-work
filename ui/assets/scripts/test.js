@@ -13,7 +13,6 @@ $(function() {
   var bgColorsArray = [];
   var rotation = 0;
   var currentSection = 0;
-  var currentSectionName;
   var touchStartY = 0;
   var moved = 0;
   var animRAF;
@@ -66,7 +65,6 @@ $(function() {
   WIN.on('scroll',function(e) {
 
   })
-  WIN.on('mousemove',moveCloseIcon)
 
   WIN.on('keydown',function(e) {
     if (e.keyCode === 39 || e.keyCode === 40 || e.keyCode === 32) {
@@ -84,14 +82,10 @@ $(function() {
     animateScroll($(this).index() * -90,rotation);
   })
 
-  $('.js-view-icon').on('click', function(e) {
+  $('.js-section-number').on('click', function() {
     BODY.addClass('is-gallery');
-    moveCloseIcon(e);
-    for (var i=1;i<=4;i++) {
-      $('.js-gallery img').eq(i-1).attr('src','ui/assets/images/projects/' + currentSectionName + i + '.jpg')
-    }
   })
-  $('.js-close-icon').on('click', function() {
+  $('.js-gallery').on('click', function() {
     BODY.removeClass('is-gallery');
   })
 
@@ -123,38 +117,24 @@ $(function() {
       transform: 'rotate(' + rotation + 'deg) scale(' + scale + ')',
     })
     currentSection = Math.floor((rotation-30)/-90);
-    currentSectionName = $('.js-section').eq(currentSection).data('project')
     var bg = bgColorsArray[currentSection-1]
     var color = colorsArray[currentSection-1]
     BODY.css({
       backgroundColor: bg,
       color: color
     })
-    $('.js-section').css({
+    $('.js-project').css({
       color: color
-    })
-    $('.js-view-icon').css({
-      background: color,
-      color: bg
-    })
-    $('.js-view-icon svg rect').css({
-      stroke: bg
-    })
-    $('.js-nav').css({
-      color: color
-    })
-    $('.js-nav svg path').css({
-      fill: color
     })
     for (var i=0;i<$('.js-section').length;i++) {
       if (i - currentSection < -1) {
         $('.js-section').eq(i).css({
-          display: 'none'
+          // display: 'none'
         })
       } else {
-        $('.js-section').eq(i).css({
-          display: 'block'
-        })
+        // $('.js-section').eq(i).css({
+        //   display: 'block'
+        // })
       }
       if (currentSection > 1) {
         $('.js-section').eq(i).css({
@@ -173,14 +153,6 @@ $(function() {
     })
   }
 
-  function moveCloseIcon(e) {
-    if (BODY.hasClass('is-gallery')) {
-      $('.js-close-icon').css({
-        transform: 'translate3d(' + Math.floor(e.pageX - 24) + 'px,' + Math.floor(e.pageY - 24) + 'px,0)'
-      })
-    }
-  }
-
   function resizeHandler () { // Set the size of images and preload them
     _winW = window.innerWidth;
     _winH = window.innerHeight;
@@ -188,12 +160,10 @@ $(function() {
   }
   function buildSpiral() {
     spiralOrigin = Math.floor(_winW * axis) + 'px ' + Math.floor(_winW * aspect * axis) +'px';
-    var sectionOrigin = Math.floor(_winW * axis) + 'px ' + Math.floor(_winW * aspect * axis) +'px';
-    var w = _winW * aspect;
+    var w = _winW;
     var h = _winW * aspect;
     if (_winW < 960) {
       spiralOrigin = Math.floor((_winW/aspect) * aspect * (1 - axis)) +'px ' + Math.floor((_winW/aspect) * axis) + 'px ';
-      sectionOrigin = Math.floor((_winW/aspect) * aspect * (1 - axis)) +'px ' + Math.floor((_winW/aspect) * axis) + 'px ';
       w = _winW;
       h = _winW;
     }
@@ -206,16 +176,22 @@ $(function() {
       backfaceVisiblity: 'hidden'
     })
     $('.js-section').each(function(i){
-      var myRot = Math.floor(90*i);
-      var scale = toFixed(Math.pow(aspect, i));
-      console.log(scale)
+      var myRot = 0;
+      var scale = 1;
+      if (i > 0) {
+        myRot = 90;
+        scale = aspect;
+      }
       $(this).css({
         width: w,
         height: h,
-        transformOrigin: sectionOrigin,
+        right: 0,
+        top: 0,
+        transformOrigin: spiralOrigin,
+        transform: 'rotate(' + myRot + 'deg) scale(' + scale + ') ' + translate,
         backfaceVisiblity: 'hidden',
       })
-      document.querySelectorAll('.js-section')[i].style.transform = 'rotate(' + myRot + 'deg) scale(' + toFixed(Math.pow(aspect, i)) + ') ' + translate
+
       if (i > 0 && bgColorsArray.length < $('.js-section').length) {
         var bg = $(this).css('background')
         bg = bg.substr(0, bg.indexOf(')'))
@@ -227,32 +203,15 @@ $(function() {
         })
       }
     })
-    function toFixed(x) {
-      if (Math.abs(x) < 1.0) {
-        var e = parseInt(x.toString().split('e-')[1]);
-        if (e) {
-            x *= Math.pow(10,e-1);
-            x = '0.' + (new Array(e)).join('0') + x.toString().substring(2);
-        }
-      } else {
-        var e = parseInt(x.toString().split('+')[1]);
-        if (e > 20) {
-            e -= 20;
-            x /= Math.pow(10,e);
-            x += (new Array(e+1)).join('0');
-        }
-      }
-      return x;
-    }
     scrollHandler();
   }
 
   function startScrollTimeout () {
     clearTimeout(showLineTimeout)
     showLineTimeout = setTimeout(function(){
-      // $('.js-spiral-line').css({
-      //   display: 'none'
-      // })
+      $('.js-spiral-line').css({
+        display: 'none'
+      })
       console.log(rotation%90)
       if (rotation%90 < -80 || rotation%90 > -20) {
         cancelAnimationFrame(animRAF);

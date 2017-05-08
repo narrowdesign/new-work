@@ -105,18 +105,32 @@ a:hover, a:active { outline: 0;}
 .js-section {
   transition: 1s background;
   overflow: hidden;
-  transform: translate3d(100vw,0,0);
+  transform: translateX(100vw,0,0);
+  will-change: background;
+  .js-view-icon {
+    transition: .3s;
+  }
 }
-.js-section.active {
-  // .js-cover {
-  //   visibility: visible;
-  // }
+.js-section:not(.active) {
+  .js-view-icon {
+    background: transparent !important;
+  }
 }
+
 .js-spiral {
   // transition: .3s transform ease-out;
+  // will-change: transform;
+}
+.js-spiral-line {
+  background-image: url(/ui/assets/images/pattern.png);
+  background-size: 200px;
 }
 .js-scroll path {
 
+}
+.js-view-icon:hover {
+  opacity: .8;
+  cursor: pointer;
 }
 .js-scroll rect {
   .blink;
@@ -156,29 +170,30 @@ a:hover, a:active { outline: 0;}
       }
     }
     &:nth-of-type(2) {
-      transition-delay: .1s;
+      transition-delay: .2s;
       img {
         // transition-delay: .1s;
         border-radius: 0 100% 0 0;
       }
     }
     &:nth-of-type(3) {
-      transition-delay: .2s;
+      transition-delay: .4s;
       img {
         // transition-delay: .2s;
         border-radius: 0 0 100% 0;
       }
     }
     &:nth-of-type(4) {
-      transition-delay: .3s;
+      transition-delay: .6s;
       img {
         // transition-delay: .3s;
-        border-radius: 0 0 0 80%;
+        border-radius: 0 0 0 75%;
       }
     }
   }
 }
 .is-gallery {
+  cursor: none;
   .js-gallery {
     .js-gallery-image {
       pointer-events: auto;
@@ -189,5 +204,8 @@ a:hover, a:active { outline: 0;}
         border-radius: 0;
       }
     }
+  }
+  .js-close-icon {
+    left: 0;
   }
 }
