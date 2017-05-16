@@ -95,6 +95,9 @@
 .t-100vh {
   top: 100vh;
 }
+.t-100vw {
+  top: 100vw;
+}
 
 .t-2vw {
   top: 2vw;
@@ -3305,6 +3308,10 @@
   font-size: .8rem;
   line-height: 1.5;
 }
+.f-s-body {
+  font-size: ~"calc(8px + .45vw)";
+  line-height: 1.5;
+}
 .f-s-xs {
   font-size: .9vw;
   line-height: 1.5;
@@ -3413,7 +3420,11 @@
     line-height: 1.5;
   }
   .ms-f-s-xs {
-    font-size: .9rem;
+    font-size: .9vw;
+    line-height: 1.5;
+  }
+  .ms-f-s-body {
+    font-size: ~"calc(8px + .35vw)";
     line-height: 1.5;
   }
   .ms-f-s-s {
@@ -3441,7 +3452,7 @@
     line-height: 1.25;
   }
   .ms-f-s-xl {
-    font-size: 2.8vw;
+    font-size: 3.2vw;
     line-height: .72;
   }
   .ms-f-s-xxl {
@@ -5060,11 +5071,7 @@
   height: 100vh;
 }
 @media (max-width: 960px) {
-  .fullscreen,
-  .fs {
-    width: 100vw;
-    height: ~"calc(100vh - 4rem)";
-  }
+
 }
 
 .w-fs {
