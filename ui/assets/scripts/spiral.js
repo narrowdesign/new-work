@@ -19,11 +19,18 @@
 
   sizeCanvas();
 
-  window.addEventListener('wheel',drawMbp);
+  window.addEventListener('wheel', function(){
+    drawMbp()
+    drawMbp()
+    drawMbp()
+  }
+    );
   window.addEventListener('touchmove',drawMbp);
   window.addEventListener('keydown',function() {
     if (rotation > 90 || rotation < -1300)
     keydown = true;
+    drawMbp()
+    drawMbp()
     drawMbp()
   });
   window.addEventListener('keyup',function() {

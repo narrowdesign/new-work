@@ -12,25 +12,32 @@ body:after {
   width: 100%;
   height: 100%;
   background: black;
-  z-index: 1000;
-  transition: 1s;
+  z-index: 400;
+  transition: 1.5s ease-in 1s;
 }
-body:after {
-  content: '';
-  position: fixed;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  background: black;
-  z-index: 1000;
-  transition: 1s;
+.js-n, .js-spiral-overlay {
+  transition: 2s linear .5s;
+  pointer-events: none;
 }
 body.is-in {
   &:after {
     visibility: hidden;
     opacity: 0;
     pointer-events: none;
+  }
+  .js-n {
+    opacity: 0;
+    visibility: hidden;
+    filter: blur(20px);
+  }
+  .js-spiral-overlay {
+    opacity: 0;
+    visibility: hidden;
+    path,
+    rect {
+      stroke-width: 0;
+      transition: 2s;
+    }
   }
 }
 h1 {
@@ -136,14 +143,15 @@ a:hover, a:active { outline: 0;}
   overflow: hidden;
   transform: translateX(100vw,0,0);
 }
-.js-section {
-
-}
-
-body:not(.is-firefox) .js-section {
-  @media (min-width: 960px) {
-    will-change: background;
-    transition: .3s background;
+@media (min-width: 960px) {
+  body:not(.is-firefox) {
+    .js-section:hover:not(.active) {
+      border-radius: 16.18%;
+    }
+    .js-section {
+      will-change: background, border-radius;
+      transition: .3s background, .2s border-radius ease-out;
+    }
   }
 }
 
@@ -171,6 +179,11 @@ body:not(.is-firefox) .js-section.active {
       // transition-delay: .3s;
       // left: 0;
     }
+  }
+}
+body.is-firefox {
+  .js-view-icon {
+    width: ~"calc(61.80339vw * .6180339 * .6180339 * .6180339 * .6180339 * .6180339)";
   }
 }
 
@@ -367,4 +380,20 @@ body:not(.is-firefox) .js-section.active {
 }
 
 @media (max-width: 960px) {
+}
+
+.js-phi {
+  /* These are technically the same, but use both */
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+
+    -ms-word-break: break-all;
+    /* This is the dangerous one in WebKit, as it breaks things wherever */
+    word-break: break-all;
+
+    /* Adds a hyphen where the word breaks, if supported (No Blink) */
+    -ms-hyphens: auto;
+    -moz-hyphens: auto;
+    -webkit-hyphens: auto;
+    hyphens: auto;
 }
