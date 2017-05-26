@@ -145,8 +145,16 @@ a:hover, a:active { outline: 0;}
 }
 @media (min-width: 960px) {
   body:not(.is-firefox) {
+    .js-section:not(.active) {
+      .js-view-icon {
+        transition: .3s ease-out;
+      }
+    }
     .js-section:hover:not(.active) {
       border-radius: 16.18%;
+      .js-view-icon {
+        border-radius: 40px;
+      }
     }
     .js-section {
       will-change: background, border-radius;
@@ -155,11 +163,11 @@ a:hover, a:active { outline: 0;}
   }
 }
 
-.active .js-section-title {
-  span {
-    transition: .3s;
-  }
-}
+// .active .js-section-title {
+//   span {
+//     transition: .3s;
+//   }
+// }
 
 .js-section .js-project-cover {
   width: 0px;

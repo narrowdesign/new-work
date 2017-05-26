@@ -64,20 +64,20 @@
     }
   }
 
-  var mbpRed = new Image;
-  mbpRed.src = 'ui/assets/images/spiral-line.svg';
+  var spiralRed = new Image;
+  spiralRed.src = 'ui/assets/images/spiral-line.svg';
   var count = 0;
   function drawMbp() {
     count++;
     if (spiraling || keydown) {
       if (count%1000 < 250) {
-        mbpRed.src = spirals[0];
+        spiralRed.src = spirals[0];
       } else if (count%1000 < 500) {
-        mbpRed.src = spirals[1];
+        spiralRed.src = spirals[1];
       } else if (count%1000 < 750) {
-        mbpRed.src = spirals[2];
+        spiralRed.src = spirals[2];
       } else if (count%1000 < 1000) {
-        mbpRed.src = spirals[3];
+        spiralRed.src = spirals[3];
       }
       requestAnimationFrame(function(){
         ctx.globalAlpha = 1;
@@ -85,7 +85,7 @@
         ctx.translate( spiralOriginX, spiralOriginY);
         ctx.rotate(2)
         ctx.translate( -spiralOriginX, -spiralOriginY);
-        ctx.drawImage(mbpRed, 0,0,winW,winH);
+        ctx.drawImage(spiralRed, 0,0,winW,winH);
       })
     } else {
       ctx.setTransform(1, 0, 0, 1, 0, 0);

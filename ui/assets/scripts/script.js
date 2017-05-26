@@ -9,6 +9,7 @@ $(function() {
   var _winW;
   var _winH;
   var smallScreen;
+  var landscape;
   var aspect = .618033;
   var axis = .7237;
   var spiralOrigin;
@@ -31,7 +32,10 @@ $(function() {
       userAgent = window.navigator.userAgent.toLowerCase(),
       safari = userAgent.indexOf('safari') != -1 && userAgent.indexOf('chrome') == -1,
       firefox = userAgent.indexOf('firefox') != -1 || userAgent.indexOf('mozilla') == -1,
-      ios = /iphone|ipod|ipad/.test( userAgent );
+      ios = /iphone|ipod|ipad/.test( userAgent ),
+      linux = userAgent.indexOf('linux') != -1,
+      windows = userAgent.indexOf('windows') != -1;
+
 
   if (firefox) {
     BODY.addClass('is-firefox');
@@ -95,8 +99,11 @@ $(function() {
 
   WIN.on('mousewheel', function(e) {
     if (!accessible) {
-      console.log(e)
-      moved = -e.deltaY || 0;
+      var deltaY = e.deltaY;
+      if (windows || linux) {
+        deltaY = e.deltaY * 5;
+      }
+      moved = -deltaY || 0;
       rotation += moved/-10;
       rotation = trimRotation();
       if (!BODY.hasClass('is-gallery')) {
@@ -151,7 +158,15 @@ $(function() {
       cancelAnimationFrame(animRAF);
       animateScroll((currentSection - 1) * -90,rotation)
     }
+    $('.js-arc').css({
+      display: 'block'
+    })
     scrollHandler()
+  })
+  WIN.on('keyup',function(e){
+    $('.js-arc').css({
+      display: 'none'
+    })
   })
 
   $('#canvas').on('click',function(){
@@ -199,11 +214,36 @@ $(function() {
       }
     }
   })
+  var viewInterval;
   $('.js-project-cta').on('mouseenter',function(){
-    $('.js-view-text', this).text('Open')
+    var i = 0;
+    var text = "Open";
+    var viewText = $('.js-view-text', this)
+    viewText.text('');
+    clearInterval(viewInterval)
+    viewInterval = setInterval(function(){
+      if (i > text.length) {
+        clearInterval(viewInterval)
+      } else {
+        viewText.text(viewText.text() + text.substr(i,1))
+      }
+      i++;
+    },60)
   })
   $('.js-project-cta').on('mouseleave',function(){
-    $('.js-view-text', this).text('View')
+    var i = 0;
+    var text = "View";
+    var viewText = $('.js-view-text', this)
+    viewText.text('');
+    clearInterval(viewInterval)
+    viewInterval = setInterval(function(){
+      if (i > text.length) {
+        clearInterval(viewInterval)
+      } else {
+        viewText.text(viewText.text() + text.substr(i,1))
+      }
+      i++;
+    },60)
   })
   $('.js-gallery').on('click', function() {
     BODY.removeClass('is-gallery');
@@ -263,6 +303,9 @@ $(function() {
           })
           $('.js-close-bg').css({
             fill: color,
+          })
+          $('.js-arc').css({
+            backgroundColor: color,
           })
           $('.js-close-lines').css({
             fill: bg,
@@ -325,10 +368,16 @@ $(function() {
           }
           $('.js-section').removeClass('active')
           $('.js-section').eq(currentSection).addClass('active')
-
         }
+        $('.js-message').css({
+          zIndex: 10
+        })
         if (currentSection < 0) {
           spiraling = 'white';
+        } else if (currentSection === $('.js-section').length - 1 && smallScreen) {
+          $('.js-message').css({
+            zIndex: 500
+          })
         } else if (currentSection > $('.js-section').length - 1) {
           spiraling = 'black';
           $('.js-spiral').css({
@@ -347,10 +396,12 @@ $(function() {
     return Math.max(-1500, Math.min(1200, rotation))
   }
   function moveCloseIcon(e) {
-    $('.js-close-icon').css({
-      transform: 'translate3d(' + Math.floor(e.pageX - 24) + 'px,' + Math.min($('.js-gallery-description-box').offset().top - 30 - BODY.scrollTop(),Math.floor(e.pageY - BODY.scrollTop() - 24)) + 'px,0)',
-      right: 'auto'
-    })
+    if (!smallScreen) {
+      $('.js-close-icon').css({
+        transform: 'translate3d(' + Math.floor(e.pageX - 24) + 'px,' + Math.min($('.js-gallery-description-box').offset().top - 30 - BODY.scrollTop(),Math.floor(e.pageY - BODY.scrollTop() - 24)) + 'px,0)',
+        right: 'auto'
+      })
+    }
   }
 
   function mousemoveHandler(e) {
@@ -384,11 +435,8 @@ $(function() {
   function resizeHandler () { // Set the size of images and preload them
     _winW = window.innerWidth;
     _winH = window.innerHeight;
-    if (_winW < 960) {
-      smallScreen = true;
-    } else {
-      smallScreen = false;
-    }
+    smallScreen = _winW < 960;
+    landscape = _winH < _winW;
     if (!accessible) {
       buildSpiral()
     }
@@ -398,7 +446,7 @@ $(function() {
     var sectionOrigin = Math.floor(_winW * axis) + 'px ' + Math.floor(_winW * aspect * axis) +'px';
     var w = _winW * aspect;
     var h = _winW * aspect;
-    if (_winW < 960) {
+    if (smallScreen && !landscape) {
       spiralOrigin = Math.floor((_winW/aspect) * aspect * (1 - axis)) +'px ' + Math.floor((_winW/aspect) * axis) + 'px ';
       sectionOrigin = Math.floor((_winW/aspect) * aspect * (1 - axis)) +'px ' + Math.floor((_winW/aspect) * axis) + 'px ';
       w = _winW;
@@ -464,5 +512,4 @@ $(function() {
       },200);
     }
   }
-
 })
