@@ -3,8 +3,9 @@ var rotation = 0;
 $(function() {
 
   var WIN = $(window);
-  var DOC = $(document);
   var BODY = $("body");
+  var sections = $('.js-section');
+  var spiral = $('.js-spiral')
 
   var _winW;
   var _winH;
@@ -15,6 +16,7 @@ $(function() {
   var spiralOrigin;
   var colorsArray = [];
   var bgColorsArray = [];
+  var sectionCount = sections.length;
   var currentSection = 0;
   var currentSectionName;
   var touchStartY = 0;
@@ -53,17 +55,6 @@ $(function() {
 
       };
   }
-  // var g = 0;
-  // var nColorInterval = setInterval(function(){
-  //   g++;
-  //   console.log(bgColorsArray[g%bgColorsArray.length])
-  //   $('.js-n path').css({
-  //     fill: bgColorsArray[g%bgColorsArray.length]
-  //   })
-  //   if (g > 100) {
-  //     clearInterval(nColorInterval)
-  //   }
-  // },200)
 
   setTimeout(function(){
     $('.js-overlay ').css({
@@ -77,20 +68,6 @@ $(function() {
 
   resizeHandler();
 
-  // if (!smallScreen) {
-  //   $('.js-section-title-word').each(function(i){
-  //     var title = $('.js-section-title-word').eq(i);
-  //     title.html(function(index, html) {
-  //       html = html.replace(/&amp;/g, '&');
-  //       return html.replace(/\S/g, '<span>$&</span>');
-  //     });
-  //     $('span',title).each(function(j){
-  //       $('span',title).eq(j).css({
-  //         transitionDelay: j/20 + 's'
-  //       })
-  //     })
-  //   });
-  // }
 // EVENTS
 /////////
 
@@ -157,10 +134,13 @@ $(function() {
     } else if (e.keyCode === 37 || e.keyCode === 38) {
       cancelAnimationFrame(animRAF);
       animateScroll((currentSection - 1) * -90,rotation)
+    } else if ($('.mc-field-group input[name="EMAIL"]').is(':focus')) {
+      console.log('focus')
+    } else {
+      $('.js-arc').css({
+        display: 'block'
+      })
     }
-    $('.js-arc').css({
-      display: 'block'
-    })
     scrollHandler()
   })
   WIN.on('keyup',function(e){
@@ -191,7 +171,7 @@ $(function() {
     animateScroll((currentSection + 1) * -90,rotation)
     e.stopPropagation()
   })
-  $('.js-section').on('click',function() {
+  sections.on('click',function() {
     cancelAnimationFrame(animRAF)
     animateScroll($(this).index() * -90,rotation);
   })
@@ -284,7 +264,7 @@ $(function() {
         var scale = Math.pow(aspect,rotation/90);
         currentSection = Math.min(21,Math.max(-16,Math.floor((rotation-30)/-90)));
         if (currentSection < 20 && currentSection > -15) {
-          $('.js-spiral').css({
+          spiral.css({
             transform: 'rotate(' + rotation + 'deg) scale(' + scale + ')',
           })
           $('.js-dot').removeClass('op-100');
@@ -294,7 +274,7 @@ $(function() {
             currentNum = "LOST";
           }
           $('.js-current').text(currentNum);
-          currentSectionName = $('.js-section').eq(currentSection).data('project')
+          currentSectionName = sections.eq(currentSection).data('project')
           var bg = bgColorsArray[currentSection-1]
           var color = colorsArray[currentSection-1]
           BODY.css({
@@ -329,7 +309,11 @@ $(function() {
           $('.js-dots').css({
             color: color
           })
-          $('.js-section').css({
+          $('.js-ask').css({
+            color: bg,
+            background: color
+          })
+          sections.css({
             color: color
           })
           $('.js-view-icon').css({
@@ -351,41 +335,41 @@ $(function() {
           $('.js-nav svg path').css({
             fill: color
           })
-          for (var i=0;i<$('.js-section').length;i++) {
+          for (var i=0;i<sectionCount;i++) {
             if (i - currentSection < -1) {
-              $('.js-section').eq(i).css({
+              sections.eq(i).css({
                 display: 'none'
               })
             } else {
-              $('.js-section').eq(i).css({
+              sections.eq(i).css({
                 display: 'block'
               })
             }
-            $('.js-section').eq(i).css({
+            sections.eq(i).css({
               background: bg,
               // transitionDelay: (i-currentSection)/20 + 's'
             })
           }
-          $('.js-section').removeClass('active')
-          $('.js-section').eq(currentSection).addClass('active')
+          sections.removeClass('active')
+          sections.eq(currentSection).addClass('active')
         }
         $('.js-message').css({
           zIndex: 10
         })
         if (currentSection < 0) {
           spiraling = 'white';
-        } else if (currentSection === $('.js-section').length - 1 && smallScreen) {
+        } else if (currentSection === sectionCount - 1 && smallScreen) {
           $('.js-message').css({
             zIndex: 500
           })
-        } else if (currentSection > $('.js-section').length - 1) {
+        } else if (currentSection > sectionCount - 1) {
           spiraling = 'black';
-          $('.js-spiral').css({
+          spiral.css({
             pointerEvents: 'none'
           })
         } else {
           spiraling = false;
-          $('.js-spiral').css({
+          spiral.css({
             pointerEvents: 'auto'
           })
         }
@@ -464,14 +448,14 @@ $(function() {
         backfaceVisiblity: 'hidden'
       })
     }
-    $('.js-spiral').css({
+    spiral.css({
       transformOrigin: spiralOrigin,
       backfaceVisiblity: 'hidden'
     })
-    $('.js-total').text($('.js-section').length)
+    $('.js-total').text(sectionCount)
 
-    $('.js-section').each(function(i){
-      if ($('.js-dot').length < $('.js-section').length) {
+    sections.each(function(i){
+      if ($('.js-dot').length < sectionCount) {
         var dot = $('.js-dot').eq(0).clone()
         $('.js-dots').append(dot)
       }
@@ -482,9 +466,9 @@ $(function() {
         height: h,
         transformOrigin: sectionOrigin,
         backfaceVisiblity: 'hidden',
+        transform: 'rotate(' + myRot + 'deg) scale(' + Math.pow(aspect, i) + ') ' + translate
       })
-      document.querySelectorAll('.js-section')[i].style.transform = 'rotate(' + myRot + 'deg) scale(' + Math.pow(aspect, i) + ') ' + translate
-      if (i > 0 && bgColorsArray.length < $('.js-section').length) {
+      if (i > 0 && bgColorsArray.length < sectionCount) {
         var bg = $(this).css('backgroundColor')
         bg = bg.substr(0, bg.indexOf(')') + 1)
         var color = $(this).css('color')
@@ -502,14 +486,93 @@ $(function() {
 
   function startScrollTimeout () {
     clearTimeout(showLineTimeout)
-    if (currentSection > -1 && currentSection < $('.js-section').length) {
+    if (currentSection > -1 && currentSection < sectionCount) {
       showLineTimeout = setTimeout(function(){
-        // $('.js-spiral-line').css({
-        //   display: 'none'
-        // })
         cancelAnimationFrame(animRAF);
         animateScroll(currentSection * -90,rotation,.15);
       },200);
     }
   }
+
+  var Membership = function(email, callback) {
+    $.ajax({
+      type: "POST",
+      url: '//www.narrowdesign.com/scripts/mailchimp-one.php',
+      data: {email: email},
+      success: function(data) {
+        if (data && data.title === "Member Exists") {
+          $('.mc-field-group input[name="EMAIL"]').val('ALREADY SIGNED UP')
+        } else if (data && data.status === 400) {
+          $('.mc-field-group input[name="EMAIL"]').val('ERROR 🤔')
+        } else if (data && data.status !== 400) {
+          $('.mc-field-group input[name="EMAIL"]').val('OK, FINE')
+        }
+        $('.mc-field-group input[name="EMAIL"]').addClass('bam');
+        setTimeout(function(){
+          $('.mc-field-group input[name="EMAIL"]').val('')
+          $('.mc-field-group input[name="EMAIL"]').removeClass('bam');
+        },5000)
+      },
+      error: function(data) {
+        console.log('error')
+        //if (data && data.status !== 400)
+        $('.mc-field-group input[name="EMAIL"]').val('ERROR 🤔')
+        if (data && data.title === "Member Exists") {
+          $('.mc-field-group input[name="EMAIL"]').val('ALREADY SIGNED UP')
+        }
+        $('.mc-field-group input[name="EMAIL"]').addClass('bam');
+        setTimeout(function(){
+          $('.mc-field-group input[name="EMAIL"]').val('')
+          $('.mc-field-group input[name="EMAIL"]').removeClass('bam');
+        },5000)
+      },
+      dataType: 'json'
+    });
+  }
+
+  Membership.validateEmail = function(val) {
+    var valid = val.indexOf('@') != -1 && val.lastIndexOf('.') > val.indexOf('@') + 1 && val.substr(val.lastIndexOf('.') + 1).length > 1;
+    return valid;
+  }
+
+  // check if specific email is subscribed, or if any subscription is there at all
+  Membership.check = function(email) {
+    if (email)
+      return localStorage['mailchimp-subscription'] == email;
+    else
+      return localStorage['mailchimp-subscription'];
+  }
+
+  // triggered when MC form is submitted,
+  // overrides default action so browser does not navigate away
+  Membership.onSubmit = function(event) {
+    var email = $('input[name="EMAIL"]', this);
+    if (Membership.validateEmail(email.val())) {
+      email.removeClass('is-error');
+      Membership(email.val(), function() {
+        $(document.body).addClass('is-subscribed')
+        Membership.onSuccess(email.val(), true);
+      })
+    } else {
+      email.addClass('is-error')
+    }
+    return false;
+  }
+
+  Membership.initialize = function() {
+    // add css class when this browser has subscribed before
+    // var email = Membership.check();
+    // if (email) {
+    //   // $(document.body).addClass('is-subscribed')
+    //   // Membership.onSuccess(email);
+    // }
+
+    // there are multiple forms on the page
+    $('form[id="mc-embedded-subscribe-form"]').each(function() {
+
+      // listen for form submission
+      $(this).submit(Membership.onSubmit);
+    })
+  }
+  Membership.initialize();
 })
